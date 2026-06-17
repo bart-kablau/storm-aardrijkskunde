@@ -118,6 +118,14 @@ h1,h2,h3,.fred{font-family:"Fredoka","Nunito",sans-serif;letter-spacing:-.01em;l
 .tile .mini-bar{height:8px;border-radius:6px;background:var(--surface-2);overflow:hidden;margin-top:10px;border:1px solid var(--line)}
 .tile .mini-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-bright));width:100%;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
 
+/* ===== Podcast-afleveringen ===== */
+.ep{margin-bottom:14px}
+.ep-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.ep-em{font-size:1.7rem;flex:none}
+.ep-head h3{margin:0;font-size:1.08rem;color:var(--plum)}
+.ep-head p{margin:.15rem 0 0;font-size:.85rem;color:var(--ink-soft)}
+.ep audio{width:100%;height:40px}
+
 /* ===== Lijst-rijen (onderwerpen/thema's) ===== */
 .row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
   border-radius:var(--r);padding:13px 14px;cursor:pointer;font:inherit;color:inherit;box-shadow:var(--shadow-sm);
@@ -435,6 +443,13 @@ sup{font-size:.72em;line-height:0}
           <div class="mini-bar"><i id="bar-woorden"></i></div>
         </div>
       </button>
+      <button class="tile wide" id="tile-podcast-btn" style="display:none" onclick="show('podcast')">
+        <span class="em">🎧</span>
+        <div style="flex:1">
+          <h3 id="th-podcast">Luister de podcast</h3>
+          <p id="tile-podcast-p">het hele hoofdstuk uitgelegd</p>
+        </div>
+      </button>
       <button class="tile" id="tile-3" onclick="startSpel()"><span class="em" id="tile-3-em">🎮</span><h3 id="tile-3-h">Spelletje</h3><p id="tile-3-p">Woorden matchen</p></button>
       <button class="tile" onclick="show('spiekblad')"><span class="em">📝</span><h3>Spiekblad</h3><p>Alles kort · printen</p></button>
     </div>
@@ -576,6 +591,13 @@ sup{font-size:.72em;line-height:0}
       <button class="btn" onclick="window.print()">🖨️ Printen / opslaan als PDF</button>
     </div>
     <div class="panel cheat" id="cheat"></div>
+  </section>
+
+  <!-- ============ PODCAST ============ -->
+  <section id="screen-podcast" class="screen">
+    <div class="shead"><button class="back" onclick="show('home')">←</button><h2 id="hd-podcast">Podcast</h2></div>
+    <p style="color:var(--ink-soft);margin:0 0 14px" id="podcast-sub">Luister naar het hoofdstuk — fijn in de auto, op de bank of vlak voor de toets.</p>
+    <div id="podcast-list"></div>
   </section>
 
 </div>
@@ -729,7 +751,7 @@ function zegEN(t){ zegDoel(t); }   // alias: spreekt de doeltaal (CONFIG.voiceLa
 function zegNL(t){ spreek(t,"nl-NL"); }
 
 /* ---------- navigatie ---------- */
-const SCREENS=["home","grammatica","uitleg","quiz","result","woorden","thema","stapel","leren","wtoets","spel","spiekblad"];
+const SCREENS=["home","grammatica","uitleg","quiz","result","woorden","thema","stapel","leren","wtoets","spel","spiekblad","podcast"];
 function show(name){
   SCREENS.forEach(s=>el("screen-"+s).classList.toggle("on", s===name));
   window.scrollTo({top:0,behavior:"instant"});
@@ -739,6 +761,7 @@ function show(name){
   if(name==="thema") renderStapels();
   if(name==="stapel") renderStapel();
   if(name==="spiekblad") renderSpiekblad();
+  if(name==="podcast") renderPodcast(); else stopPodcast();
 }
 
 /* ---------- toast + confetti ---------- */
@@ -1503,6 +1526,20 @@ function renderSpiekblad(){
   box.innerHTML=html;
 }
 
+/* ---------- podcast ---------- */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function renderPodcast(){
+  const list=el("podcast-list"); if(!list) return;
+  const eps=window.PODCASTS||[];
+  list.innerHTML = eps.map(p=>
+    '<div class="panel ep">'+
+      '<div class="ep-head"><span class="ep-em">'+esc(p.emoji||"🎧")+'</span>'+
+      '<div><h3>'+esc(p.titel)+'</h3>'+(p.sub?'<p>'+esc(p.sub)+'</p>':'')+'</div></div>'+
+      '<audio controls preload="metadata" src="audio/'+esc(p.file)+'"></audio>'+
+    '</div>').join("");
+}
+function stopPodcast(){ document.querySelectorAll("#podcast-list audio").forEach(a=>{ try{ a.pause(); }catch(e){} }); }
+
 /* ---------- video ---------- */
 function openVideo(id){
   const m=el("video-modal"), v=el("vplayer");
@@ -1616,6 +1653,12 @@ function initVak(){
   const key = VAK.tegels.includes("proeftoets") ? "proeftoets" : (VAK.tegels.includes("spel")?"spel":null);
   const t3=el("tile-3");
   if(t3){ if(!key){ t3.style.display="none"; } else { const d=TEGEL3[key]; setText("tile-3-em",d.em); setText("tile-3-h",d.h); setText("tile-3-p",d.p); t3.setAttribute("onclick",d.fn); } }
+  // Podcast-tegel: alleen tonen als dit vak afleveringen heeft (window.PODCASTS, per vak in content.js)
+  const tp=el("tile-podcast-btn");
+  if(tp && window.PODCASTS && window.PODCASTS.length){
+    tp.style.display="flex";
+    setText("tile-podcast-p", window.PODCASTS[0].tegelSub || (window.PODCASTS.length+" afleveringen · luister wanneer je wilt"));
+  }
 }
 initVak();
 renderHome();

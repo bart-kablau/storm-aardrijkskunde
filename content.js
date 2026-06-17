@@ -2272,3 +2272,9 @@ window.AANMOEDIGING = {
   ]
 };
 
+
+/* ---------- Podcast-afleveringen (NotebookLM, zie ../02-notebooklm) ---------- */
+window.PODCASTS = [
+  { id: "volledig", emoji: "🎧", titel: "Volledige uitleg", sub: "Storm & de hosts bespreken het hele hoofdstuk · ~16 min", file: "podcast-H1.m4a", tegelSub: "het hele hoofdstuk uitgelegd · ~16 min" },
+  { id: "kort", emoji: "⚡", titel: "Korte samenvatting", sub: "Snelle recap met alle begrippen · ~6 min, fijn vlak voor de toets", file: "podcast-H1-kort-6min.m4a" }
+];
