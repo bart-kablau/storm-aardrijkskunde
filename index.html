@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Frans met Storm — Quel week-end!</title>
+<title>Storm leert</title>
 <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'&gt;&lt;text y='52' font-size='52'&gt;🦦&lt;/text&gt;&lt;/svg&gt;" />
 <style>
 /* ===== Fonts (gebundeld, offline) ===== */
@@ -313,6 +313,14 @@ sup{font-size:.72em;line-height:0}
 .chip:active{transform:scale(.95)}
 .chip.sel{background:oklch(0.96 0.05 45);box-shadow:0 0 0 3px oklch(0.70 0.18 46/.25)}
 .chip.placed{border-color:var(--ok);color:oklch(0.40 0.10 165);cursor:default}
+.ontleed-zin{display:flex;flex-wrap:wrap;gap:8px;line-height:2}
+.otok{font:inherit;font-size:1.05rem;padding:6px 10px;border-radius:10px;border:2px solid oklch(0.9 0.03 320);
+  background:#fff;color:inherit;cursor:pointer;transition:transform .08s ease,background .12s ease,border-color .12s ease}
+.otok:active{transform:scale(.96)}
+.otok.sel{background:oklch(0.93 0.06 320);border-color:oklch(0.6 0.15 320)}
+.otok.ans{background:oklch(0.93 0.12 150);border-color:oklch(0.6 0.15 150);color:oklch(0.32 0.1 150)}
+.otok.mis{background:oklch(0.93 0.09 25);border-color:oklch(0.6 0.18 25);color:oklch(0.4 0.15 25);text-decoration:line-through}
+.otok:disabled{cursor:default;opacity:1}
 .sleep-bakjes{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:14px}
 .bak{display:flex;flex-direction:column;gap:8px;min-height:96px;padding:12px;border-radius:16px;border:2px dashed var(--plum);background:var(--surface);cursor:pointer;text-align:center;font:inherit}
 .bak-label{font-weight:800;color:var(--plum)}
@@ -867,7 +875,12 @@ function scoreVraag(ok,q,juist,gekozen){
   ronde.antwoorden[ronde.i]=ok; if(ok){ ronde.goed++; el("q-goed").textContent=ronde.goed+" goed"; }
   feedback(ok,q,juist,gekozen);
 }
-function eqCheck(val, antwoord, vars){ return !!window.equiv && window.equiv(val, antwoord, vars||[]); }
+function eqCheck(val, antwoord, vars){
+  if(window.equiv) return window.equiv(val, antwoord, vars||[]);            // wiskunde: numerieke gelijkwaardigheid
+  // tekst-vak (geen math.js): normaliseer + sta alternatieven met | toe via de bestaande checkAntwoord
+  const st = checkAntwoord(val, String(antwoord ?? "").split("|")).status;  // guard: ontbrekend antwoord → "fout", niet "null"
+  return st==="goed" || st==="accent";
+}
 
 /* --- bouw: antwoord opbouwen met tekstveld + symbool-toetsen → equiv --- */
 function renderBouw(q, area){
@@ -1162,7 +1175,36 @@ function renderLabel(q, area){
   shuffle(doelen.slice()).forEach(d=>{ const c=document.createElement("button"); c.type="button"; c.className="chip"; c.textContent=d.label; c.dataset.id=d.id; c.onclick=()=>selectChip(c); chips.appendChild(c); });
 }
 
-Object.assign(RENDERERS, { sequence:renderSequence, open:renderOpen, hotspot:renderHotspot, label:renderLabel });
+/* --- ontleed: woorden in een echte zin aanwijzen (span-select) en als zinsdeel/woordsoort labelen --- */
+function ontleedTokens(zin){ return String(zin).trim().split(/\s+/); }                 // whitespace-split; leesteken blijft aan 't woord plakken
+function ontleedScore(sel, ans){ const a=(ans||[]).slice().sort((x,y)=>x-y); const s=sel.slice().sort((x,y)=>x-y);
+  return s.length===a.length && s.every((v,i)=>v===a[i]); }                            // exacte set-gelijkheid (lege set = "geen" antwoord)
+function renderOntleed(q, area){
+  const toks=ontleedTokens(q.zin); const chosen=new Set(); let done=false;
+  const wrap=document.createElement("div"); wrap.className="ontleed";
+  const zinEl=document.createElement("div"); zinEl.className="ontleed-zin";
+  toks.forEach((t,i)=>{ const b=document.createElement("button"); b.type="button"; b.className="otok"; b.innerHTML=wisHTML(t);
+    b.onclick=()=>{ if(done) return; if(chosen.has(i)){ chosen.delete(i); b.classList.remove("sel"); } else { chosen.add(i); b.classList.add("sel"); } };
+    zinEl.appendChild(b); });
+  wrap.appendChild(zinEl);
+  const btn=document.createElement("button"); btn.className="btn"; btn.style.marginTop="14px"; btn.textContent="Check";
+  btn.onclick=()=>{ if(done) return; done=true;
+    const sel=[...chosen]; const ok=ontleedScore(sel, q.antwoord);
+    zinEl.querySelectorAll(".otok").forEach((b,i)=>{ b.disabled=true;
+      const inAns=(q.antwoord||[]).includes(i);
+      if(inAns) b.classList.add("ans");                 // juiste woorden groen
+      if(chosen.has(i) && !inAns) b.classList.add("mis");// fout gekozen rood
+    });
+    btn.style.display="none";
+    const gekozen = sel.sort((x,y)=>x-y).map(i=>toks[i]).join(" ") || "(niets)";
+    const juist   = (q.antwoord||[]).map(i=>toks[i]).join(" ") || "(geen — er hoort niets aangetikt te worden)";
+    scoreVraag(ok, q, ok?null:juist, gekozen);
+  };
+  wrap.appendChild(btn);
+  area.appendChild(wrap);
+}
+
+Object.assign(RENDERERS, { sequence:renderSequence, open:renderOpen, hotspot:renderHotspot, label:renderLabel, ontleed:renderOntleed });
 function huidigeRegel(){ if(!huidigTopic) return null; const g=LEERSTOF.find(x=>x.id===huidigTopic); if(!g) return null; const st=gramState(huidigTopic); return g.niveaus[st.niveau-1].regel; }
 /* antwoord-specifieke fout-uitleg: q.fout kan {"<antwoord>":"uitleg", …} zijn (vooral bij mc) */
 function vindFout(q, gekozen){
