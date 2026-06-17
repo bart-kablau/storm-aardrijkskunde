@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="De Stille Oceaan met een ring van vulkanen eromheen">
+  <!-- land -->
+  <rect width="400" height="300" fill="#9BC08A"/>
+  <!-- Stille Oceaan -->
+  <ellipse cx="200" cy="150" rx="150" ry="120" fill="#5B9BD5"/>
+  <ellipse cx="200" cy="150" rx="150" ry="120" fill="none" stroke="#3E78AE" stroke-width="3"/>
+  <text x="200" y="156" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-size="15" fill="#EAF3FB" font-weight="700">Stille Oceaan</text>
+  <!-- ring van vulkanen op de kust -->
+  <g fill="#D8472F" stroke="#7A2418" stroke-width="1.5">
+    <polygon points="341,158 359,158 350,140"/>
+    <polygon points="297,243 315,243 306,225"/>
+    <polygon points="191,278 209,278 200,260"/>
+    <polygon points="85,243 103,243 94,225"/>
+    <polygon points="41,158 59,158 50,140"/>
+    <polygon points="85,73 103,73 94,55"/>
+    <polygon points="191,38 209,38 200,20"/>
+    <polygon points="297,73 315,73 306,55"/>
+  </g>
+</svg>

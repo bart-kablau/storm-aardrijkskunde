@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="320" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Doorsnede van een vulkaan">
+  <defs>
+    <linearGradient id="lucht" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#DCEcF6"/><stop offset="1" stop-color="#F3F8FB"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="320" fill="url(#lucht)"/>
+  <!-- ondergrond -->
+  <rect x="0" y="250" width="400" height="70" fill="#6B5440"/>
+  <rect x="0" y="250" width="400" height="70" fill="#5A4636" opacity=".35"/>
+  <!-- vulkaankegel (laagjes lava en as = lasagne) -->
+  <polygon points="70,250 200,55 330,250" fill="#7A5C44"/>
+  <polygon points="105,250 200,108 295,250" fill="#8E6B4E"/>
+  <polygon points="140,250 200,160 260,250" fill="#A07C5B"/>
+  <!-- kraterpijp -->
+  <path d="M193,86 L207,86 L210,235 L190,235 Z" fill="#3A1F12"/>
+  <!-- magmakamer -->
+  <ellipse cx="200" cy="258" rx="60" ry="30" fill="#E8632A"/>
+  <ellipse cx="200" cy="258" rx="38" ry="18" fill="#FFB23E"/>
+  <!-- lavastroom over de rechterflank -->
+  <path d="M206,84 Q250,150 300,246 L320,244 Q268,150 214,80 Z" fill="#F2920B"/>
+  <!-- krater (opening bovenin) -->
+  <polygon points="178,74 222,74 210,92 190,92" fill="#3A1F12"/>
+  <!-- aswolk -->
+  <g fill="#9AA0A6" opacity=".85">
+    <circle cx="200" cy="44" r="20"/><circle cx="176" cy="52" r="14"/><circle cx="224" cy="52" r="15"/><circle cx="200" cy="30" r="14"/>
+  </g>
+</svg>
