@@ -191,6 +191,10 @@ window.LEERSTOF = [
                 "dat er een brug was gebouwd"
               ],
               "a": "dat de continenten vroeger aan elkaar vastzaten"
+            },
+            "fout": {
+              "dat dieren konden zwemmen": "dat verklaart de bewijzen niet. Dezelfde fossielen én dezelfde gesteentelagen aan weerszijden van de oceaan passen juist bij continenten die ooit vastzaten, niet bij zwemmende dieren.",
+              "dat er een brug was gebouwd": "een brug zou de passende kustlijnen en de doorlopende gesteentelagen niet verklaren. De drie aanwijzingen samen wijzen erop dat de continenten zelf aan elkaar vastzaten."
             }
           },
           {
@@ -617,6 +621,10 @@ window.LEERSTOF = [
                 "de zon verwarmt de grond"
               ],
               "a": "de druk loopt op tot de korst in één keer doorschiet"
+            },
+            "fout": {
+              "de aarde wordt langzaam zachter": "dat is niet wat er gebeurt. Net als de kast die eerst niet beweegt en dan ineens schuift, bouwt de spanning in de korst zich op tot die in één klap loslaat — daarom voelt het zo plotseling.",
+              "de zon verwarmt de grond": "de zon heeft hier niets mee te maken. Een aardbeving komt door spanning diep in de aardkorst die zich opbouwt en plotseling losschiet."
             }
           },
           {
@@ -993,6 +1001,10 @@ window.LEERSTOF = [
                 "allebei maken ze regen"
               ],
               "a": "allebei: opgebouwde druk die er plotseling met kracht uit komt"
+            },
+            "fout": {
+              "allebei zijn ze koud": "een vulkaan is juist gloeiend heet, dus 'koud' klopt niet. De overeenkomst met de geschudde fles is de opgebouwde druk die er plotseling met kracht uit komt.",
+              "allebei maken ze regen": "regen hoort hier niet bij. Het gaat erom dat de druk zich opbouwt en er dan ineens met kracht uitspuit — bij de fles én bij de vulkaan."
             }
           },
           {
